@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Khayal</title>
+  <link rel="icon" type="image/png" href="Khayal logo.PNG">
+  <style>
+    .slide img {
+      width: 100%;
+      height: 380px;
+      object-fit: contain; /* show whole image */
+      background-color: #000;
+      display: block;
+    }
+
+    :root {
+      --bg:#0f1724; --card:#0b1520; --accent:#06b6d4; --muted:#94a3b8;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      min-height:100vh;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      background:linear-gradient(180deg,var(--bg),#071028);
+      font-family:Inter,system-ui,sans-serif;color:#e6eef6;padding:24px;
+      user-select: none;  /* disable text select */
+    }
+    body,html{ -webkit-user-select:none; -ms-user-select:none; user-select:none;}
+    .logo{width:120px;margin-bottom:12px;}
+    h1{font-size:28px;font-weight:600;margin-bottom:24px;}
+    .carousel{
+      width:100%;max-width:980px;
+      background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+      border-radius:16px;padding:18px;
+      box-shadow:0 8px 30px rgba(2,6,23,0.7);position:relative;
+    }
+    .carousel-viewport{overflow:hidden;border-radius:12px;background:#071226;}
+    .slides{display:flex;transition:transform 420ms cubic-bezier(.2,.9,.3,1);}
+    .slide{min-width:100%;flex-shrink:0;border-radius:10px;overflow:hidden;position:relative;background:#02111a;}
+    .caption{position:absolute;left:20px;bottom:18px;background:rgba(4,10,16,0.6);padding:10px 14px;border-radius:10px;font-size:14px;color:var(--muted);backdrop-filter:blur(6px);}
+    .arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(6,182,212,0.15);border:none;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:var(--accent);}
+    .arrow:hover{background:rgba(6,182,212,0.3);transform:translateY(-50%) scale(1.1)}
+    .arrow:active{transform:translateY(-50%) scale(.95)}
+    .arrow.prev{left:12px}.arrow.next{right:12px}
+    .dots{display:flex;gap:8px;justify-content:center;margin-top:12px;}
+    .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.06);cursor:pointer;transition:all .2s;}
+    .dot[aria-current="true"]{transform:scale(1.3);background:var(--accent)}
+    @media(max-width:720px){.slide img{height:260px}.arrow{width:40px;height:40px}}
+  </style>
+</head>
+<body oncontextmenu="return false">
+  <img src="Khayal logo.PNG" alt="Khayal Logo" class="logo">
+  <h1>Khayal</h1>
+
+  <div class="carousel" aria-label="Image carousel">
+    <div class="carousel-viewport">
+      <div class="slides" id="slides">
+        <figure class="slide"><img src="bmwm3.jfif"><figcaption class="caption">BMW M3 – Precision sports sedan.</figcaption></figure>
+        <figure class="slide"><img src="dodge.jfif"><figcaption class="caption">Dodge Challenger – Classic muscle.</figcaption></figure>
+        <figure class="slide"><img src="gwagon1.jfif"><figcaption class="caption">Mercedes G-Wagon – Luxury SUV.</figcaption></figure>
+        <figure class="slide"><img src="gwagon2.jfif"><figcaption class="caption">Mercedes G-Wagon Black – Rugged style.</figcaption></figure>
+        <figure class="slide"><img src="mustang.jfif"><figcaption class="caption">Ford Mustang – Legendary car.</figcaption></figure>
+        <figure class="slide"><img src="porsche.jfif"><figcaption class="caption">Porsche 911 – Timeless icon.</figcaption></figure>
+        <figure class="slide"><img src="porsche2.jfif"><figcaption class="caption">Porsche Carrera– Sporty luxury.</figcaption></figure>
+        <figure class="slide"><img src="gtr.jfif"><figcaption class="caption">Nissan GT-R – Godzilla speed.</figcaption></figure>
+        <figure class="slide"><img src="ferrari.jfif"><figcaption class="caption">Ferrari – Italian passion.</figcaption></figure>
+        <figure class="slide"><img src="lambo.jfif"><figcaption class="caption">Lamborghini – Exotic power.</figcaption></figure>
+      </div>
+      <button class="arrow prev" id="prev">◀</button>
+      <button class="arrow next" id="next">▶</button>
+    </div>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <script>
+    // Simple "copy trap"
+    if(window.location.protocol === "file:"){
+      throw new Error("Error occurred"); // if someone tries to run copied code locally
+    }
+
+    (function(){
+      const slidesEl=document.getElementById('slides');
+      const slides=Array.from(slidesEl.children);
+      const prevBtn=document.getElementById('prev');
+      const nextBtn=document.getElementById('next');
+      const dotsEl=document.getElementById('dots');
+      let index=0,total=slides.length;
+      function update(){
+        if(index<0) index=total-1;
+        if(index>=total) index=0;
+        slidesEl.style.transform=`translateX(${-index*100}%)`;
+        Array.from(dotsEl.children).forEach((d,i)=>d.setAttribute('aria-current',i===index));
+      }
+      function goTo(i){index=i;update();}
+      function next(){goTo(index+1)}
+      function prev(){goTo(index-1)}
+      slides.forEach((s,i)=>{
+        const b=document.createElement('button');
+        b.className='dot';
+        b.addEventListener('click',()=>goTo(i));
+        if(i===0)b.setAttribute('aria-current',true);
+        dotsEl.appendChild(b);
+      });
+      prevBtn.addEventListener('click',prev);
+      nextBtn.addEventListener('click',next);
+      document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')prev();if(e.key==='ArrowRight')next();});
+      update();
+    })();
+  </script>
+</body>
+</html>
